@@ -17,7 +17,8 @@ class Event(models.Model):
     start_time = models.TimeField("Event Starting time", help_text="Starting time")
     end_time = models.TimeField("Event Final time", help_text="Final time")
     description = models.TextField("Event Description", help_text="Event details", blank=True, null=True)
-    meat = models.CharField(max_length=50, help_text="Meat for Bbq", choices=meat_choices)
+    meat = models.CharField(max_length=50, help_text="Meat for Bbq", choices=meat_choices, default=None)
+    public_invite_url = models.URLField(max_length=200, null=True)
 
     def __str__(self):
         return self.name

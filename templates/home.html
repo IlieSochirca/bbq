@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 <title>{% block title %}Home{% endblock %}</title>
 {% block content %}
-    <h1>BBQ EVENT PLANNER</h1>
+{% if user.is_authenticated %}
+<b> Hi {{ user.username }}! </b>
+<h1> Welcome to the BBQ Event Planner</h1>
+{% else %}
+<p>You are not logged in</p>
+<button><a href="{% url 'login' %}">Login</a></button>
+{% endif %}
 {% endblock %}
