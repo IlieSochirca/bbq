@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+<title>{% block title %}Accept Invite{% endblock %}</title>
+{% block content %}
+<form action='.' method='POST'>{% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+{% endblock %}
