@@ -48,6 +48,7 @@ class EventForm(forms.ModelForm):
         ]
 
 
+
 class FoodForm(forms.ModelForm):
     class Meta:
         model = Food

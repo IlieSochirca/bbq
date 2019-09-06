@@ -5,20 +5,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from bbq import settings
 from .forms import EventForm, FoodForm, DrinksForm, AcceptInvitationForm
-from .models import Event
+from .models import Event, Attendee, Food, Drink
 
 
 # Create your views here.
 
-# @login_required("/accounts/login")
+@login_required()
 def event_create_view(request):
     template_name = "events/event_create.html"
     form = EventForm(request.POST or None)
     if form.is_valid():
-        inst = form.save(commit=True)
+        inst = form.save(commit=False)
+        inst.organizer = request.user
+        inst.save()
         public_url = f"{settings.DOMAIN}events/{inst.pk}/invite/{uuid.uuid4()}"
         inst.public_invite_url = public_url
-        # inst.organizer = request.user
         inst.save()
         return redirect(reverse("events:events-list"))
     context = {
@@ -73,19 +74,19 @@ def drinks_create_view(request):
 
 def accept_invite_view(request, pk, invite_pk):
     template_name = "events/accept_invite.html"
-    print(pk, invite_pk)
+    post_data = request.POST
     event = get_object_or_404(Event, pk=pk)
-    print(event)
     form = AcceptInvitationForm(request.POST or None, instance=event)
     if form.is_valid():
         inst = form.save(commit=False)
-        print(request.POST)
-        inst.attendees_names.append(request.POST["attendee_name"])
         inst.no_participants += int(request.POST["no_participants"])
         inst.save()
-        return redirect(reverse("events:event-detail", kwargs={"pk":pk}))
+        attendee = Attendee.objects.create(name=post_data["attendee_name"],
+                                food=Food.objects.get(pk=post_data["food"]),
+                                drinks=Drink.objects.get(pk=post_data["drinks"]))
+        attendee.event.add(event)
+        return redirect(reverse("events:event-detail", kwargs={"pk": pk}))
     context = {
         "form": form,
-        "event": event
     }
     return render(request, template_name, context=context)
