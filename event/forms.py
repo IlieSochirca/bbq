@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from bbq import settings
-from .models import Event, Food, Drink
+from .models import Event, Food, Drink, Attendee
 
 
 class RelatedFieldWidgetCanAdd(widgets.Select):
@@ -44,9 +44,8 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = [
-            "name", "day", "start_time", "end_time", "description", "food", "drinks", "no_participants"
+            "name", "day", "start_time", "end_time", "description", "food", "drinks"
         ]
-
 
 
 class FoodForm(forms.ModelForm):
@@ -62,8 +61,14 @@ class DrinksForm(forms.ModelForm):
 
 
 class AcceptInvitationForm(forms.ModelForm):
-    attendee_name = forms.CharField(max_length=50, required=True)
+    no_guests = forms.IntegerField(required=False)
 
     class Meta:
-        model = Event
-        fields = ["attendee_name", "food", "drinks", "no_participants"]
+        model = Attendee
+        fields = ["name", "food", "desired_food_quantity", "drinks", "desired_drinks_quantity", "no_guests"]
+
+    def __init__(self, event, *args, **kwargs):
+        super(AcceptInvitationForm, self).__init__(*args, **kwargs)
+        event = Event.objects.get(pk=event.pk)
+        self.fields["food"].queryset = Food.objects.filter(EventFood=event)
+        self.fields["drinks"].queryset = Drink.objects.filter(EventDrink=event)

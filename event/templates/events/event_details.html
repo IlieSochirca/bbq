@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+<title>{% block title %}Event Detail{% endblock %}</title>
+{% block content %}
+{% if user.is_authenticated %}
+<h4><b>Event's {{ event.name}} Details:</b></h4>
+
+<p><b>Event Day:</b> {{ event.day }}</p>
+<p><b>Event Starting Time:</b> {{ event.start_time }}</p>
+<p><b>Event Final Time:</b> {{ event.end_time }}</p>
+<p><b>Description:</b> {{ event.description }}</p>
+<p><b>Event Food and Quantity:</b>
+    {% for food in event_food %}
+    <p>{{food}} - {{food.quantity}}</p>
+    {% endfor %}
+    </p>
+<p><b>Event Drinks:</b>
+    {% for drink in event_drinks%}
+    <p>{{drink}} - {{drink.quantity}}</p>
+    {% endfor %}
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Visitor</th>
+            <th>Food</th>
+            <th>Drinks</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for visitor in attendees_names %}
+            <tr>
+                <td>{{visitor.name}}</td>
+                <td>{{visitor.food}} - {{attendee_food_quantity}}</td>
+                <td>{{visitor.drinks}} - {{attendee_drink_quantity}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p><b>Number of Guests:</b> {{ event.no_guests }}</p>
+<p><b>Total Number of attendees:</b> {{ total_no_attendees }}</p>
+<p><b>Public Invite Url: <a href="{{ event.public_invite_url }}">Invite link</a></b></p>
+
+<p><b>Go back to the <a href="{% url 'events:events-list' %}">List of events</a></b></p>
+{% endif %}
+{% endblock %}

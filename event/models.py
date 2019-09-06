@@ -2,8 +2,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
-from users.models import User
-
 
 class Food(models.Model):
     """
@@ -33,8 +31,11 @@ class Attendee(models.Model):
     """
     name = models.CharField(max_length=50, help_text="Attendee Name")
     food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name="Food")
+    desired_food_quantity = models.CharField(max_length=50, blank=True)
     drinks = models.ForeignKey(Drink, on_delete=models.CASCADE, related_name="Drink")
+    desired_drinks_quantity = models.CharField(max_length=50, blank=True)
     event = models.ManyToManyField("Event")
+    no_guests = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
         return self.name
@@ -53,7 +54,8 @@ class Event(models.Model):
     food = models.ManyToManyField(Food, related_name="EventFood")
     drinks = models.ManyToManyField(Drink, related_name="EventDrink")
     public_invite_url = models.URLField(max_length=200, null=True)
-    no_participants = models.IntegerField(null=True, help_text="Number of Participants", blank=True)
+    no_guests = models.IntegerField(null=True, help_text="How Many people will you bring with you?", blank=True,
+                                    default=0)
 
     def __str__(self):
         return self.name

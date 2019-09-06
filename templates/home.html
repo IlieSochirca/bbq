@@ -2,7 +2,6 @@
 <title>{% block title %}Home{% endblock %}</title>
 {% block content %}
 {% if user.is_authenticated %}
-<b> Hi {{ user.username }}! </b>
 <h1> Welcome to the BBQ Event Planner</h1>
 {% else %}
 <p>You are not logged in</p>
