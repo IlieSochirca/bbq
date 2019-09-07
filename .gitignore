@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.idea/
+.idea/*
 # C extensions
 *.so
 
@@ -104,18 +104,3 @@ venv.bak/
 
 # mkdocs documentation
 /site
-
-# mypy
-.mypy_cache/
-© 2019 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
