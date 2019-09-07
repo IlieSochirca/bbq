@@ -1,17 +1,32 @@
 {% extends 'base.html' %}
 <title>{% block title %}Accept Invite{% endblock %}</title>
 {% block content %}
-<!--<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet"/>-->
+{#<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet"/>#}
 <div class="container">
     <div class="row">
-        <div class="col">
-        {% include 'events/event_details.html' %}
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <h4><b>Event's {{ event.name}} Details:</b></h4>
+
+            <p><b>Event Day:</b> {{ event.day }}</p>
+            <p><b>Event Starting Time:</b> {{ event.start_time }}</p>
+            <p><b>Event Final Time:</b> {{ event.end_time }}</p>
+            <p><b>Description:</b> {{ event.description }}</p>
+            <p><b>Event Food and Quantity:</b>
+                {% for food in event_food %}
+                <p>{{food}} - {{food.quantity}}</p>
+                {% endfor %}
+                </p>
+            <p><b>Event Drinks:</b>
+                {% for drink in event_drinks%}
+                <p>{{drink}} - {{drink.quantity}}</p>
+                {% endfor %}
+            </p>
         </div>
-        <div class="col">
-            <form action='.' method='POST'>{% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Accept Invitation</button>
-            </form>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <form action='.' method='POST'>{% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Accept Invitation</button>
+                </form>
         </div>
     </div>
 </div>

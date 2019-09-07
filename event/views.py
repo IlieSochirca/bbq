@@ -6,13 +6,16 @@ from django.urls import reverse
 
 from bbq import settings
 from .forms import EventForm, FoodForm, DrinksForm, AcceptInvitationForm
-from .models import Event, Attendee, Food, Drink
+from .models import Event, Attendee
 
-
-# Create your views here.
 
 @login_required()
 def event_create_view(request):
+    """
+    Event Create Function Based view
+    :param request:
+    :return:
+    """
     template_name = "events/event_create.html"
     form = EventForm(request.POST or None)
     if form.is_valid():
@@ -34,8 +37,13 @@ def event_create_view(request):
 
 
 def events_list_view(request):
+    """
+    Events list Function Based view
+    :param request:
+    :return:
+    """
     template_name = "events/events_list.html"
-    queryset = Event.objects.all()
+    queryset = Event.objects.filter(organizer=request.user)
     context = {
         "object_list": queryset
     }
@@ -43,6 +51,12 @@ def events_list_view(request):
 
 
 def event_detail_view(request, pk):
+    """
+    Event Detail Function Based View
+    :param request:
+    :param pk:
+    :return:
+    """
     template_name = "events/event_details.html"
     event = get_object_or_404(Event, pk=pk)
     event_food = event.food.all()
@@ -60,6 +74,11 @@ def event_detail_view(request, pk):
 
 
 def food_create_view(request):
+    """
+    Create Food View
+    :param request:
+    :return:
+    """
     form = FoodForm(request.POST or None)
     if form.is_valid():
         form.save()
@@ -73,6 +92,11 @@ def food_create_view(request):
 
 
 def drinks_create_view(request):
+    """
+    Drinks Create View
+    :param request:
+    :return:
+    """
     form = DrinksForm(request.POST or None)
     if form.is_valid():
         form.save()
@@ -85,22 +109,29 @@ def drinks_create_view(request):
 
 
 def accept_invite_view(request, pk, invite_pk):
+    """
+    Accept Invite View
+    :param request:
+    :param pk:
+    :param invite_pk:
+    :return:
+    """
     template_name = "events/accept_invite.html"
     event = get_object_or_404(Event, pk=pk)
+    event_food = event.food.all()
+    event_drinks = event.drinks.all()
     form = AcceptInvitationForm(event, request.POST or None)
     if form.is_valid():
-        inst = form.save(commit=False)
+        inst = form.save(commit=True)
         event.no_guests += int(request.POST["no_guests"])
-        inst.save()
-        # attendee = Attendee.objects.create(name=form.cleaned_data["name"],
-        #                                    food=Food.objects.get(pk=form.cleaned_data["food"]),
-        #                                    desired_food_quantity=form.cleaned_data["desired_food_quantity"],
-        #                                    drinks=Drink.objects.get(pk=form.cleaned_data["drinks"],
-        #                                    desired_drinks_quantity=form.cleaned_data["desired_drinks_quantity"]))
+        event.save()
         inst.event.add(event)
         inst.save()
         return redirect(reverse("events:event-details", kwargs={"pk": pk}))
     context = {
-        "form": form
+        "form": form,
+        "event": event,
+        "event_food": event_food,
+        "event_drinks": event_drinks,
     }
     return render(request, template_name, context=context)

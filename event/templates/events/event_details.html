@@ -30,8 +30,8 @@
         {% for visitor in attendees_names %}
             <tr>
                 <td>{{visitor.name}}</td>
-                <td>{{visitor.food}} - {{attendee_food_quantity}}</td>
-                <td>{{visitor.drinks}} - {{attendee_drink_quantity}}</td>
+                <td>{{visitor.food}} - {{visitor.desired_food_quantity}}</td>
+                <td>{{visitor.drinks}} - {{visitor.desired_drinks_quantity}}</td>
             </tr>
         {% endfor %}
     </tbody>

@@ -21,10 +21,10 @@ class RelatedFieldWidgetCanAdd(widgets.Select):
     def render(self, name, value, *args, **kwargs):
         self.related_url = reverse(self.related_url)
         output = [super(RelatedFieldWidgetCanAdd, self).render(name, value, *args, **kwargs)]
-        url = f'<a href="{self.related_url}?_to_field=id&_popup=1" class="add-another" id="add_id_{name}" onclick="return showAddAnotherPopup(this);"> '
+        url = f'<a href="{self.related_url}">'
         output.append(url)
         output.append(
-            f'<img src="{settings.STATIC_URL}admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>')
+            f'<img src="{settings.STATIC_URL}admin/img/icon-addlink.svg" width="10" height="10" alt="Add Another"/></a>')
         return mark_safe(''.join(output))
 
 
@@ -49,18 +49,29 @@ class EventForm(forms.ModelForm):
 
 
 class FoodForm(forms.ModelForm):
+    """
+    Food Form
+    """
+
     class Meta:
         model = Food
         fields = ["name", "quantity"]
 
 
 class DrinksForm(forms.ModelForm):
+    """
+    Drinks Form
+    """
+
     class Meta:
         model = Drink
         fields = ["name", "quantity"]
 
 
 class AcceptInvitationForm(forms.ModelForm):
+    """
+    AcceptInvitation Form
+    """
     no_guests = forms.IntegerField(required=False)
 
     class Meta:
